@@ -6,16 +6,35 @@ namespace MvcMovie.Controllers
 {
     public class PersonController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Upload()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Index(Person ps)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(IFormFile file)
         {
-            string strOutput = "Xin chào " + ps.PersonId + " - " + ps.FullName + " - " + ps.Address;
-            ViewBag.infoPerson = strOutput;
+            if (file=null)
+            {
+                string fileExtension = Path.GetExtention(file.FileName);
+                if (fileExtension != ".xls" && fileExtension != ".xlsx")
+                {
+                    ModelState.AddModelError("","Please choose excel file to upload!");
+                }
+                else
+                {
+                    //rename file when upload to server
+                    var fileName = DateTime.Now.ToShortTimeString() + fileExtension;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory() + "/Upload/Excels", fileName);
+                    var fileLocation = new FileInfo(filePath).ToString();
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        //save file to server
+                        await file.CopyToAsync(stream);
+                    }
+                }
+            }
             return View();
         }
     }
