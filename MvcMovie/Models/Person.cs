@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotattions;
-using System.ComponentModel.DataAnnotattions.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MvcMovie.Models{
+namespace MvcMovie.Models
 {
 [Table("Persons")]
 public class Person
